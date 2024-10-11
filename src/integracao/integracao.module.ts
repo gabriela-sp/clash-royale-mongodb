@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { MongooseModule } from '@nestjs/mongoose';
 import { IntegracaoService } from './integracao.service';
 import { IntegracaoController } from './integracao.controller';
-import { AppService } from './new-app.service'; 
+import { NewAppService } from './new-app.service'; 
 import { Player, BattleSchema } from '../schemas/battle.schema';
 
 @Module({
@@ -11,7 +11,7 @@ import { Player, BattleSchema } from '../schemas/battle.schema';
     HttpModule,
     MongooseModule.forFeature([{ name: Player.name, schema: BattleSchema }]),
   ],
-  providers: [IntegracaoService, AppService],
+  providers: [IntegracaoService, NewAppService],
   controllers: [IntegracaoController],
 })
 export class IntegracaoModule {}
