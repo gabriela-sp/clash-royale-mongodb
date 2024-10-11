@@ -6,8 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     imports: [
         MongooseModule.forRootAsync({
             useFactory: (configService: ConfigService) => ({
-                uri: configService.getOrThrow<string>('MONGO_URL'),
-                dbName: configService.getOrThrow<string>('MONGO_DB_NAME'),
+                uri: "mongodb+srv://devairasoares:pato@cluster0.9rwot.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+                dbName: "clash_royale",
             }),
             inject: [ConfigService],
         }),
