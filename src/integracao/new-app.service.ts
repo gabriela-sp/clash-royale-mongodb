@@ -5,7 +5,7 @@ import { Player } from '../schemas/battle.schema';
 import { IntegracaoService } from './integracao.service'; 
 
 @Injectable()
-export class AppService {
+export class NewAppService {
   constructor(
     @InjectModel(Player.name) private readonly playerModel: Model<Player>,
     private readonly integracaoService: IntegracaoService,

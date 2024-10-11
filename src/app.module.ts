@@ -11,7 +11,6 @@ import { IntegracaoModule } from './integracao/integracao.module';
 import { HttpModule } from '@nestjs/axios';
 import { NewAppService } from './integracao/new-app.service';
 
-
 @Module({
   imports: [HttpModule, ConfigModule.forRoot({ isGlobal: true }), MongoConnection, MongooseModule.forFeature([{ name: Player.name, schema: BattleSchema }]), IntegracaoModule],
   controllers: [AppController, IntegracaoController],
