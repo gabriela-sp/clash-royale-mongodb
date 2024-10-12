@@ -1,3 +1,4 @@
+// src/schemas/battle.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
@@ -16,13 +17,13 @@ export class Player {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false }) 
   battlesplayed: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false }) 
   level: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false }) 
   trophies: number;
 
   @Prop({

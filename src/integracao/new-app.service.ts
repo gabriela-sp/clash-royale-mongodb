@@ -1,22 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Player } from '../schemas/battle.schema'; 
 import { IntegracaoService } from './integracao.service'; 
+import { CardService } from './card.service';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class NewAppService {
   constructor(
     @InjectModel(Player.name) private readonly playerModel: Model<Player>,
     private readonly integracaoService: IntegracaoService,
+    private readonly cardService: CardService,
   ) {}
 
   async ingestPlayers(): Promise<void> {
     try {
-      const players = await this.integracaoService.getClans(); 
-      for (const playerData of players) {
-        const player = new this.playerModel(playerData);
-        await player.save();
+      const players = await this.integracaoService.getCards();
+      for (const player of players) {
+        try {
+          const playerModel = new this.playerModel({
+            name: player.name,
+            id: player.id,
+            maxLevel: player.maxLevel,
+            elixirCost: player.elixirCost,
+            iconUrls: player.iconUrls,
+            rarity: player.rarity,
+          });
+          await playerModel.save();
+        } catch (error) {
+          console.error(`Erro ao obter dados do jogador ${player.name}: ${error.message}`);
+        }
       }
       console.log('Players ingestados com sucesso!');
     } catch (error) {
@@ -24,19 +38,19 @@ export class NewAppService {
     }
   }
 
-  async ingestPlayerBattles(playerTag: string): Promise<void> {
+  async ingestPlayerBattles(player: any) {
     try {
-      const battles = await this.integracaoService.getPlayerBattleLog(playerTag);
+      const battles = await this.integracaoService.getPlayerBattleLog(player.tag);
       for (const battleData of battles) {
-
-        const player = new this.playerModel({
-          name: battleData.playerName,
+  
+        const playerData = new this.playerModel({
+          name: player.name,
           battlesplayed: battleData.battles.length,
-          level: battleData.playerLevel,
-          trophies: battleData.trophies,
+          level: player.expLevel,
+          trophies: player.trophies,
           battles: battleData.battles,
         });
-        await player.save();
+        await playerData.save();
       }
       console.log('Batalhas ingestadas com sucesso!');
     } catch (error) {
@@ -47,9 +61,15 @@ export class NewAppService {
   async ingestCards(): Promise<void> {
     try {
       const cards = await this.integracaoService.getCards();
-      console.log('Cartas obtidas:', cards);
+      for (const card of cards) {
+        if (!card.elixirCost) {
+          card.elixirCost = 0; // Definir um valor padrão se o campo não estiver presente
+        }
+        await this.cardService.saveCard(card);
+      }
+      console.log('Cartas ingestadas com sucesso!');
     } catch (error) {
-      console.error('Erro ao obter cartas:', error);
+      console.error('Erro ao ingestar cartas:', error);
     }
   }
 }

@@ -30,10 +30,10 @@ export class IntegracaoService {
     }
   }
 
-  async getPlayer(playerTag: string): Promise<any> {
+  async getPlayerRandom(): Promise<any> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`https://api.clashroyale.com/v1/players/${encodeURIComponent(playerTag)}`, {
+        this.httpService.get('https://api.clashroyale.com/v1/players/random', {
           headers: this.getAuthHeaders(),
         }),
       );

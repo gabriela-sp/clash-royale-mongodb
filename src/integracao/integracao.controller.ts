@@ -18,13 +18,16 @@ export class IntegracaoController {
     }
 
     @Get('ingestPlayerBattles')
-    async ingestPlayerBattles(@Query('playerTag') playerTag: string) {
-      if (!playerTag) {
-        return { error: 'playerTag is required' };
-      }
+    async ingestPlayerBattles() {
       try {
-        await this.newAppService.ingestPlayerBattles(playerTag);
-        return { message: 'Player battles ingested successfully' };
+        const players = await this.integracaoService.getClans(); // Obtenha os dados do jogador com o getPlayers
+        for (const player of players) {
+          if (player.tag === 'PlayerRamdon') { // Verifique se o jogador é o PlayerRamdon
+            await this.newAppService.ingestPlayerBattles(player); // Ingeste os dados de batalhas do jogador
+            return { message: 'Player battles ingested successfully' };
+          }
+        }
+        return { error: 'Jogador não encontrado' };
       } catch (error) {
         return { error: 'Failed to ingest player battles', details: error.message };
       }
