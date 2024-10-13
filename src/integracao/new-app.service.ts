@@ -7,6 +7,8 @@ import { Player } from 'src/schemas/player.schema';
 
 @Injectable()
 export class NewAppService {
+  private players: any[] = [];
+
   constructor(
     @InjectModel(Player.name) private readonly playerModel: Model<Player>,
     private readonly integracaoService: IntegracaoService,
@@ -16,6 +18,7 @@ export class NewAppService {
   async ingestPlayers(): Promise<void> {
     try {
       const players = await this.integracaoService.getCards();
+      this.players = players; // Armazenar jogadores
       for (const player of players) {
         try {
           const playerModel = new this.playerModel({
@@ -38,10 +41,13 @@ export class NewAppService {
   }
 
   async ingestPlayerBattles(player: any) {
+    if (!player.tag) {
+      console.error(`Jogador sem tag: ${player.name}`);
+      return;
+    }
     try {
       const battles = await this.integracaoService.getPlayerBattleLog(player.tag);
       for (const battleData of battles) {
-  
         const playerData = new this.playerModel({
           name: player.name,
           battlesplayed: battleData.battles.length,

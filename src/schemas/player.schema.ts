@@ -15,15 +15,21 @@ export type PlayerDocument = Player & Document;
 })
 export class Player {
   @Prop({ required: true })
-  name: string;
+  id: number;
 
   @Prop({ required: true })
-  level: number;
+  maxLevel: number;
 
   @Prop({ required: true })
-  trophies: number;
+  elixirCost: number;
+
+  @Prop({ type: { medium: String } })
+  iconUrls: { medium: string };
 
   @Prop({ required: true })
+  rarity: string;
+
+  @Prop({ required: false })
   battlesPlayed: number;
 
   @Prop({ required: true, type: [Battle] })

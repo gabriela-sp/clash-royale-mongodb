@@ -20,19 +20,19 @@ export class IntegracaoController {
     @Get('ingestPlayerBattles')
     async ingestPlayerBattles() {
       try {
-        const players = await this.integracaoService.getClans(); // Obtenha os dados do jogador com o getPlayers
+        const players = await this.integracaoService.getClans();
         for (const player of players) {
-          if (player.tag === 'PlayerRamdon') { // Verifique se o jogador é o PlayerRamdon
-            await this.newAppService.ingestPlayerBattles(player); // Ingeste os dados de batalhas do jogador
-            return { message: 'Player battles ingested successfully' };
+          if (player.tag) { 
+            await this.newAppService.ingestPlayerBattles(player); 
+          } else {
+            console.error(`Jogador sem tag: ${player.name}`);
           }
         }
-        return { error: 'Jogador não encontrado' };
+        return { message: 'Player battles ingested successfully' };
       } catch (error) {
         return { error: 'Failed to ingest player battles', details: error.message };
       }
     }
-
     @Get('ingestCards')
     async ingestCards(){
       return this.newAppService.ingestCards();
