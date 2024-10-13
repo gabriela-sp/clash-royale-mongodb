@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Battle } from './battle.schema';
 
 export type PlayerDocument = Player & Document;
 
@@ -17,19 +18,16 @@ export class Player {
   name: string;
 
   @Prop({ required: true })
-  id: number;
+  level: number;
 
   @Prop({ required: true })
-  maxLevel: number;
+  trophies: number;
 
   @Prop({ required: true })
-  elixirCost: number;
+  battlesPlayed: number;
 
-  @Prop({ type: { medium: String } })
-  iconUrls: { medium: string };
-
-  @Prop({ required: true })
-  rarity: string;
+  @Prop({ required: true, type: [Battle] })
+  battles: Battle[];
 }
 
 export const PlayerSchema = SchemaFactory.createForClass(Player);

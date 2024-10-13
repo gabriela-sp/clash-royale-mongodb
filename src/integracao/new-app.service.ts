@@ -1,10 +1,9 @@
 import { Injectable, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Player } from '../schemas/battle.schema'; 
 import { IntegracaoService } from './integracao.service'; 
 import { CardService } from './card.service';
-import { faker } from '@faker-js/faker';
+import { Player } from 'src/schemas/player.schema';
 
 @Injectable()
 export class NewAppService {

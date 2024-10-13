@@ -2,7 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type BattleDocument = Player & Document;
+export type BattleDocument = Battle & Document;
 
 @Schema({
   timestamps: true,
@@ -13,7 +13,7 @@ export type BattleDocument = Player & Document;
     versionKey: false,
   },
 })
-export class Player {
+export class Battle {
   @Prop({ required: true })
   name: string;
 
@@ -61,4 +61,4 @@ export class Player {
   }[];
 }
 
-export const BattleSchema = SchemaFactory.createForClass(Player);
+export const BattleSchema = SchemaFactory.createForClass(Battle);
