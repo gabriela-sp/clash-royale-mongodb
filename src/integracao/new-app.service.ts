@@ -41,12 +41,10 @@ export class NewAppService {
   }
 
   async ingestPlayerBattles(player: any) {
-    if (!player.tag) {
-      console.error(`Jogador sem tag: ${player.name}`);
-      return;
-    }
+    console.log('Ingesting battles for player:', player.name);
     try {
       const battles = await this.integracaoService.getPlayerBattleLog(player.tag);
+      console.log('Battles:', battles);
       for (const battleData of battles) {
         const playerData = new this.playerModel({
           name: player.name,
@@ -55,11 +53,12 @@ export class NewAppService {
           trophies: player.trophies,
           battles: battleData.battles,
         });
+        console.log('Saving player data:', playerData);
         await playerData.save();
       }
-      console.log('Batalhas ingestadas com sucesso!');
+      console.log('Battles ingested successfully for player:', player.name);
     } catch (error) {
-      console.error('Erro ao ingestar batalhas:', error);
+      console.error('Error ingesting battles for player:', player.name, error);
     }
   }
 

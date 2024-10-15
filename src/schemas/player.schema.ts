@@ -31,9 +31,6 @@ export class Player {
 
   @Prop({ required: false })
   battlesPlayed: number;
-
-  @Prop({ required: true, type: [Battle] })
-  battles: Battle[];
 }
 
 export const PlayerSchema = SchemaFactory.createForClass(Player);
