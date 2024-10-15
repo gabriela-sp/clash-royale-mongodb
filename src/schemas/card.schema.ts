@@ -1,35 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type CardDocument = Card & Document;
-
-@Schema({
-  timestamps: true,
-  toObject: {
-    versionKey: false,
-  },
-  toJSON: {
-    versionKey: false,
-  },
-})
-export class Card {
-  @Prop({ required: true })
+@Schema()
+export class Card extends Document {
+  @Prop()
   name: string;
 
-  @Prop({ required: true })
+  @Prop()
   id: number;
 
-  @Prop({ required: true })
+  @Prop()
   maxLevel: number;
 
-  @Prop({ required: false }) // Tornar o campo opcional
+  @Prop()
   elixirCost: number;
 
   @Prop({ type: { medium: String } })
   iconUrls: { medium: string };
-
-  @Prop({ required: true })
-  rarity: string;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

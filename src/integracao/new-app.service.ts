@@ -5,6 +5,9 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { Player } from '../schemas/player.schema';
+import { Card } from '../schemas/card.schema';
+import { Clan } from '../schemas/clan.schema';
+import { Tournament } from '../schemas/tournament.schema';
 
 @Injectable()
 export class NewAppService {
@@ -12,6 +15,9 @@ export class NewAppService {
 
   constructor(
     @InjectModel(Player.name) private readonly playerModel: Model<Player>,
+    @InjectModel(Card.name) private readonly cardModel: Model<Card>,
+    @InjectModel(Clan.name) private readonly clanModel: Model<Clan>,
+    @InjectModel(Tournament.name) private readonly tournamentModel: Model<Tournament>,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
@@ -161,6 +167,161 @@ private handleHttpError(error: any): never {
       console.log('Battles ingested successfully for player:', player.name);
     } catch (error) {
       console.error('Error ingesting battles for player:', player.name, error);
+    }
+  }
+
+  async ingestClans(): Promise<void> {
+    try {
+      const clans = await this.getClans();
+      for (const clan of clans) {
+        await this.saveClan(clan);
+      }
+      console.log('Clans ingested successfully!');
+    } catch (error) {
+      console.error('Error ingesting clans:', error);
+    }
+  }
+  
+  private async saveClan(clanData: any): Promise<void> {
+    try {
+      // Assumindo que você tem um modelo Clan
+      const clan = new this.clanModel(clanData);
+      await clan.save();
+    } catch (error) {
+      console.error('Error saving clan:', error);
+    }
+  }
+
+  async ingestCards(): Promise<void> {
+    try {
+      const cards = await this.getCards();
+      for (const card of cards) {
+        await this.saveCard(card);
+      }
+      console.log('Cards ingested successfully!');
+    } catch (error) {
+      console.error('Error ingesting cards:', error);
+    }
+  }
+  
+  private async getCards(): Promise<any[]> {
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/cards`, {
+          headers: this.getAuthHeaders(),
+        })
+      );
+      return response.data.items;
+    } catch (error) {
+      this.handleHttpError(error);
+    }
+  }
+  
+  private async saveCard(cardData: any): Promise<void> {
+    try {
+      // Assumindo que você tem um modelo Card
+      const card = new this.cardModel(cardData);
+      await card.save();
+    } catch (error) {
+      console.error('Error saving card:', error);
+    }
+  }
+
+  async ingestTournaments(): Promise<void> {
+    try {
+      const tournaments = await this.getTournaments();
+      for (const tournament of tournaments) {
+        await this.saveTournament(tournament);
+      }
+      console.log('Tournaments ingested successfully!');
+    } catch (error) {
+      console.error('Error ingesting tournaments:', error);
+    }
+  }
+
+  private async getClans(): Promise<any[]> {
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/clans`, {
+          params: { minMembers: 10, limit: 100 },
+          headers: this.getAuthHeaders(),
+        })
+      );
+      return response.data.items;
+    } catch (error) {
+      this.handleHttpError(error);
+    }
+  }
+
+  private async saveClan(clanData: any): Promise<void> {
+    try {
+      const clan = new this.clanModel(clanData);
+      await clan.save();
+    } catch (error) {
+      console.error('Error saving clan:', error);
+    }
+  }
+
+  private async getCards(): Promise<any[]> {
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/cards`, {
+          headers: this.getAuthHeaders(),
+        })
+      );
+      return response.data.items;
+    } catch (error) {
+      this.handleHttpError(error);
+    }
+  }
+
+  private async saveCard(cardData: any): Promise<void> {
+    try {
+      const card = new this.cardModel(cardData);
+      await card.save();
+    } catch (error) {
+      console.error('Error saving card:', error);
+    }
+  }
+
+  private async getTournaments(): Promise<any[]> {
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/tournaments`, {
+          headers: this.getAuthHeaders(),
+        })
+      );
+      return response.data.items;
+    } catch (error) {
+      this.handleHttpError(error);
+    }
+  }
+
+  private async saveTournament(tournamentData: any): Promise<void> {
+    try {
+      const tournament = new this.tournamentModel(tournamentData);
+      await tournament.save();
+    } catch (error) {
+      console.error('Error saving tournament:', error);
+    }
+  }
+
+  private handleHttpError(error: any): never {
+    if (error.response) {
+      throw new HttpException(
+        error.response.data.message || 'Erro ao se comunicar com a API externa',
+        error.response.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } else if (error.request) {
+      throw new HttpException(
+        'Não foi possível obter resposta da API externa',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    } else {
+      throw new HttpException(
+        'Erro ao configurar a requisição para a API externa',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

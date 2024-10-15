@@ -11,9 +11,30 @@ export class IntegracaoController {
     return { message: 'Players ingested successfully' };
   }
 
-  @Get('ingestPlayerBattles')
-  async ingestPlayerBattles() {
-    await this.newAppService.ingestPlayers(); // This will ingest players and their battles
-    return { message: 'Player battles ingested successfully' };
+  @Get('ingestClans')
+  async ingestClans() {
+    await this.newAppService.ingestClans();
+    return { message: 'Clans ingested successfully' };
+  }
+
+  @Get('ingestCards')
+  async ingestCards() {
+    await this.newAppService.ingestCards();
+    return { message: 'Cards ingested successfully' };
+  }
+
+  @Get('ingestTournaments')
+  async ingestTournaments() {
+    await this.newAppService.ingestTournaments();
+    return { message: 'Tournaments ingested successfully' };
+  }
+
+  @Get('ingestAll')
+  async ingestAll() {
+    await this.newAppService.ingestPlayers();
+    await this.newAppService.ingestClans();
+    await this.newAppService.ingestCards();
+    await this.newAppService.ingestTournaments();
+    return { message: 'All data ingested successfully' };
   }
 }

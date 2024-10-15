@@ -2,36 +2,36 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-class RelevantCard {
+class Card {
   @Prop()
   name: string;
 }
 
 @Schema()
-class RelevantBattle {
+class Battle {
   @Prop()
   won: boolean;
 
   @Prop()
-  battleTime: string;
+  battletime: string;
 
-  @Prop([RelevantCard])
-  deck: RelevantCard[];
+  @Prop([Card])
+  deck: Card[];
 
-  @Prop([RelevantCard])
-  oppDeck: RelevantCard[];
-
-  @Prop()
-  towersDestroyed: number;
+  @Prop([Card])
+  oppdeck: Card[];
 
   @Prop()
-  oppTowersDestroyed: number;
+  towersdestroyed: number;
 
   @Prop()
-  trophiesOnStart: number;
+  opptowersdestroyed: number;
 
   @Prop()
-  oppTrophiesOnStart: number;
+  trophiesonstart: number;
+
+  @Prop()
+  opptrophiesonstart: number;
 }
 
 @Schema()
@@ -40,7 +40,7 @@ export class Player extends Document {
   name: string;
 
   @Prop()
-  battlesPlayed: number;
+  battlesplayed: number;
 
   @Prop()
   level: number;
@@ -48,8 +48,8 @@ export class Player extends Document {
   @Prop()
   trophies: number;
 
-  @Prop([RelevantBattle])
-  battles: RelevantBattle[];
+  @Prop([Battle])
+  battles: Battle[];
 }
 
 export const PlayerSchema = SchemaFactory.createForClass(Player);
