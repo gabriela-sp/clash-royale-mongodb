@@ -1,36 +1,55 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Battle } from './battle.schema';
 
-export type PlayerDocument = Player & Document;
+@Schema()
+class RelevantCard {
+  @Prop()
+  name: string;
+}
 
-@Schema({
-  timestamps: true,
-  toObject: {
-    versionKey: false,
-  },
-  toJSON: {
-    versionKey: false,
-  },
-})
-export class Player {
-  @Prop({ required: true })
-  id: number;
+@Schema()
+class RelevantBattle {
+  @Prop()
+  won: boolean;
 
-  @Prop({ required: true })
-  maxLevel: number;
+  @Prop()
+  battleTime: string;
 
-  @Prop({ required: true })
-  elixirCost: number;
+  @Prop([RelevantCard])
+  deck: RelevantCard[];
 
-  @Prop({ type: { medium: String } })
-  iconUrls: { medium: string };
+  @Prop([RelevantCard])
+  oppDeck: RelevantCard[];
 
-  @Prop({ required: true })
-  rarity: string;
+  @Prop()
+  towersDestroyed: number;
 
-  @Prop({ required: false })
+  @Prop()
+  oppTowersDestroyed: number;
+
+  @Prop()
+  trophiesOnStart: number;
+
+  @Prop()
+  oppTrophiesOnStart: number;
+}
+
+@Schema()
+export class Player extends Document {
+  @Prop()
+  name: string;
+
+  @Prop()
   battlesPlayed: number;
+
+  @Prop()
+  level: number;
+
+  @Prop()
+  trophies: number;
+
+  @Prop([RelevantBattle])
+  battles: RelevantBattle[];
 }
 
 export const PlayerSchema = SchemaFactory.createForClass(Player);
