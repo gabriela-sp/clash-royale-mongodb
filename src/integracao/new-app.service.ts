@@ -142,24 +142,7 @@ export class NewAppService {
       console.error('Error saving player:', error);
     }
   }
-private handleHttpError(error: any): never {
-    if (error.response) {
-      throw new HttpException(
-        error.response.data.message || 'Erro ao se comunicar com a API externa',
-        error.response.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    } else if (error.request) {
-      throw new HttpException(
-        'Não foi possível obter resposta da API externa',
-        HttpStatus.SERVICE_UNAVAILABLE,
-      );
-    } else {
-      throw new HttpException(
-        'Erro ao configurar a requisição para a API externa',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+
   async ingestPlayerBattles(player: any): Promise<void> {
     try {
       const relevantPlayer = await this.makeRelevantPlayerFrom(player);
@@ -179,16 +162,6 @@ private handleHttpError(error: any): never {
       console.log('Clans ingested successfully!');
     } catch (error) {
       console.error('Error ingesting clans:', error);
-    }
-  }
-  
-  private async saveClan(clanData: any): Promise<void> {
-    try {
-      // Assumindo que você tem um modelo Clan
-      const clan = new this.clanModel(clanData);
-      await clan.save();
-    } catch (error) {
-      console.error('Error saving clan:', error);
     }
   }
 
@@ -216,16 +189,6 @@ private handleHttpError(error: any): never {
       this.handleHttpError(error);
     }
   }
-  
-  private async saveCard(cardData: any): Promise<void> {
-    try {
-      // Assumindo que você tem um modelo Card
-      const card = new this.cardModel(cardData);
-      await card.save();
-    } catch (error) {
-      console.error('Error saving card:', error);
-    }
-  }
 
   async ingestTournaments(): Promise<void> {
     try {
@@ -239,39 +202,12 @@ private handleHttpError(error: any): never {
     }
   }
 
-  private async getClans(): Promise<any[]> {
-    try {
-      const response = await lastValueFrom(
-        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/clans`, {
-          params: { minMembers: 10, limit: 100 },
-          headers: this.getAuthHeaders(),
-        })
-      );
-      return response.data.items;
-    } catch (error) {
-      this.handleHttpError(error);
-    }
-  }
-
   private async saveClan(clanData: any): Promise<void> {
     try {
       const clan = new this.clanModel(clanData);
       await clan.save();
     } catch (error) {
       console.error('Error saving clan:', error);
-    }
-  }
-
-  private async getCards(): Promise<any[]> {
-    try {
-      const response = await lastValueFrom(
-        this.httpService.get<{ items: any[] }>(`${this.baseUrl}/cards`, {
-          headers: this.getAuthHeaders(),
-        })
-      );
-      return response.data.items;
-    } catch (error) {
-      this.handleHttpError(error);
     }
   }
 
