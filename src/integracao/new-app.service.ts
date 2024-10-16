@@ -241,6 +241,18 @@ export class NewAppService {
       console.error('Error saving tournament:', error);
     }
   }
+  
+  async ingestAllData(): Promise<void> {
+    try {
+      await this.ingestPlayers();
+      await this.ingestClans();
+      await this.ingestCards();
+      await this.ingestTournaments();
+      console.log('Todos os dados foram ingestados com sucesso!');
+    } catch (error) {
+      console.error('Erro ao ingestar todos os dados:', error);
+    }
+  }
 
   private handleHttpError(error: any): never {
     if (error.response) {

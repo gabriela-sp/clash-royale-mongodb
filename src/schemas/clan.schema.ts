@@ -2,6 +2,21 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
+class Location {
+  @Prop()
+  id: number;
+
+  @Prop()
+  name: string;
+
+  @Prop()
+  isCountry: boolean;
+
+  @Prop()
+  countryCode: string;
+}
+
+@Schema()
 export class Clan extends Document {
   @Prop()
   tag: string;
@@ -24,13 +39,8 @@ export class Clan extends Document {
   @Prop()
   clanWarTrophies: number;
 
-  @Prop()
-  location: {
-    id: number;
-    name: string;
-    isCountry: boolean;
-    countryCode: string;
-  };
+  @Prop({ type: Location })
+  location: Location;
 
   @Prop()
   requiredTrophies: number;

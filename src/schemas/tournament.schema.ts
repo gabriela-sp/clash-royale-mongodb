@@ -2,6 +2,15 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
+class GameMode {
+  @Prop()
+  id: number;
+
+  @Prop()
+  name: string;
+}
+
+@Schema()
 export class Tournament extends Document {
   @Prop()
   tag: string;
@@ -48,11 +57,8 @@ export class Tournament extends Document {
   @Prop()
   firstPlaceCardPrize: number;
 
-  @Prop()
-  gameMode: {
-    id: number;
-    name: string;
-  };
+  @Prop({ type: GameMode })
+  gameMode: GameMode;
 
   @Prop([{ type: Object }])
   members: any[];
